@@ -1,0 +1,116 @@
+package com.board;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+//Web.xml에서 설정 할 것 이다
+public class FrontBoardController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    
+    public FrontBoardController() {
+        super();
+        
+    }
+    
+    private void doProcess(HttpServletRequest request, HttpServletResponse response, String method)throws ServletException, IOException {
+    	//GET , POST  두가지 요청에 대해서 동작하는 함수
+    	//method >> 요청이 GET인지 POST 확인 
+    	System.out.println("클라이언트가 요청이 :" + method);
+    	
+    	//1. 한글처리
+    	//2. 데이터 요청 받기(request)
+    	//3. 요청을 판단(판단의 기준은 Parameter 기준에 따라 command 방식
+    	//3-1 192.168.0.35:8090/WebServlet_1/board?cmd=login&id=kglim&1004 서버로 요청 보냄
+    	//서버는 cmd 변수가 가지는 값을 가지고 판단 : login 로그인 처리
+    	//3-2 192.168.0.35:8090/WebServlet_1/board?cmd=list 요청이 오면 게시판이 보여 달라는 걸 알아야 한다
+    	
+    	//String command = requet.getParameter("cmd");
+    	//if(command.equals("login"){로그인 서비스 처리를 하겠다}
+    	//else if(command.equals("list")){게시판 목록을 보여주겠다}
+    	
+    	//command 방식과 반대 방식 URL주소 방
+    	//192.168.0.35:8090/WebServlet_1/board/boardlist
+    	//192.168.0.35:8090/WebServlet_1/board/boardwrite?tittle=방가&content=방가방가
+    	//마지막 주소 값을 추출
+    	// 		/boardlist >> 게시판 목록보기이고
+    	//		/boardwrite?tittle=방가&content=방가방가 >> 게시판 글쓰기 판단 하겠다
+    	
+    	
+    	//4.그 결과를 request , session , application에 저장
+    	
+    	//5. view 지정
+    	//view page : *.jsp
+    	//WebContent > board > boardlist.jsp
+    	//WebContent > error > error404.jsp
+    	
+    	//위 방식은 보안상 문제가 있다 그래서 실개발에서는 WebContent > WEB-INF > views폴더생성 > board or member or admin 폴더에서관리
+    	
+    	//ex) 보안폴더 : Web-INF > views > board > boardlist.jsp
+    	
+    	//6. view 에게 request객체 forward 해서 사용 가능
+    	
+    	request.setCharacterEncoding("UTF-8");
+    	
+    	String cmd = request.getParameter("cmd");
+    	
+    	//요청판단
+    	String viewpage = null;
+    	
+    	//cmd 들어값이 null이면 에러페이지 보여주자
+    	//cmd 들어오는 값이 boardlist이면  boardlist.jsp 보여주자
+    	//cmd 들어오는 값이 boardwrite이면 boardwrite.jsp 서비스하자
+    	
+    	if(cmd == null) {
+    		viewpage = "/error/error.jsp";
+    	}else if(cmd.equals("boardlist")) {
+    		/*
+    		 DB연결 하고 select에 객체 담고 저장 하겠다
+    		 boardDao dao = new boardDao();
+    		 List<board> boardlist = dao.selectBoardList();
+    		 request.setAttibute = ("list",boardlist);
+    		 forward > view 전달 (request.getAttribute())가지고 와서 화면 출력
+    		 출력시에는 EL&JSTL 사용
+    		 */
+    		viewpage = "/board/boardlist.jsp";
+    	}else if(cmd.equals("boardwrite")) {
+    		viewpage = "/board/boardwrite.jsp";
+    	}else if(cmd.equals("login")) {
+    		viewpage = "/WEB-INF/views/login/login.jsp";
+    	}else {
+    		viewpage="/error/error.jsp";
+    	}
+    	
+    	//결과저장
+    	//List<Emp> list = new ArrayList<>();
+    	//list.add(new Emp(200,김유신));
+    	//request.setAttribute("emplist",list)
+    	
+    	//view 저장
+    	RequestDispatcher dis = request.getRequestDispatcher(viewpage);
+    	
+    	
+    	//데이터 전달(forward)
+    	dis.forward(request, response);
+    	
+    	
+    }
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doProcess(request, response, "GET");
+		
+	}
+
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doProcess(request, response,"POST");
+	}
+
+}
