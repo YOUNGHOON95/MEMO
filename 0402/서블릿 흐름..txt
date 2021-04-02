@@ -1,0 +1,12 @@
+http://localhost:8090/WebServlet_3/MemoList 요청
+mapping (@WebServlet("/MemoList"))
+(MemoList 실행 ->do GET/POST  -> private void doProcess -> DB작업하고
+UI작업하고 클라이언트한테 전달~ 
+
+글쓰기 클릭 <a></a>
+http://localhost:8090/WebServlet_3/memo.html
+입력하고 전송 버튼
+<form name="f" action="MemoServlet" method="get"> 전달
+http://localhost:8090/WebServlet_3/MemoServlet?id 서버요청 주소 매핑
+@WebServlet("/MemoServlet" 실행하고 do GET/POST  -> private void doProcess -> DB작업하고(Insert) ->성공 유무에 따라 
+성공시 클라이언트한테 http://localhost:8090/WebServlet_3/MemoList  재요청
