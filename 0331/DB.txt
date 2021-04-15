@@ -7,7 +7,7 @@ create table dmlemp
   alter table dmlemp
   add constraint pk_dmemp_empno primary key(empno);
  
- SELECT * FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'DMLEMP';
+ SELECT * FROM ALL_CONSTRAINTS WHERE TABLE_NAME = 'DMLEMP';//제약확인
  
  select * from dmlemp;
  
